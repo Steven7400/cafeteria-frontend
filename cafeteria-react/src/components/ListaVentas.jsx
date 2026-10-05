@@ -5,11 +5,21 @@ import EditarVenta from './EditarVenta';
 function ListaVentas() {
   const [ventas, setVentas] = useState([]);
   const [ventaSeleccionada, setVentaSeleccionada] = useState(null);
+  const [error, setError] = useState('');
 
   const cargarVentas = () => {
     api.get('/ventas')
-      .then(res => setVentas(res.data))
-      .catch(err => console.error('Error al obtener ventas:', err));
+      .then(res => {
+        if (!Array.isArray(res.data)) {
+          throw new Error('El servidor no devolvió una lista válida de ventas.');
+        }
+        setVentas(res.data);
+        setError('');
+      })
+      .catch(err => {
+        console.error('Error al obtener ventas:', err);
+        setError('No se pudieron cargar las ventas. Verifica la conexión y la variable VITE_API_URL del backend.');
+      });
   };
 
   useEffect(() => {
@@ -30,6 +40,7 @@ function ListaVentas() {
   return (
     <div>
       <h2>Ventas de la Cafetería</h2>
+      {error && <p role="alert">{error}</p>}
       <table border="1">
         <thead>
           <tr>

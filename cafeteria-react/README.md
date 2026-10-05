@@ -1,5 +1,13 @@
 # React + Vite
 
+## Backend API
+
+The frontend sends requests to the URL configured by `VITE_API_URL`. For local
+development, it defaults to `http://localhost:3000`. In Vercel, add
+`VITE_API_URL` in the project's Environment Variables and set it to the public
+URL of the deployed backend (without a trailing slash), then redeploy the
+frontend. The backend must allow requests from the frontend's domain.
+
 This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
 Currently, two official plugins are available:

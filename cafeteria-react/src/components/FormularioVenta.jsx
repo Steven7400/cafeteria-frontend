@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { api } from '../api';
 
 function FormularioVenta() {
   const [formData, setFormData] = useState({
@@ -11,31 +11,30 @@ function FormularioVenta() {
 
   const [estudiantes, setEstudiantes] = useState([]);
   const [productos, setProductos] = useState([]);
-
-
-  useEffect(() => {
-  const cargarDatos = async () => {
-    try {
-      const res = await axios.get(`${API_URL}/productos`);
-      // Asegúrate de guardar solo si viene un arreglo
-      setProductos(Array.isArray(res.data) ? res.data : []);
-    } catch (error) {
-      console.error("Error al cargar productos:", error);
-      setProductos([]); // <--- EVITA QUE SE ROMPA TU APP
-    }
-  };
-
-  cargarDatos();
-}, []);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:3000/estudiantes')
-      .then(res => setEstudiantes(res.data))
-      .catch(err => console.error(err));
+    const cargarDatos = async () => {
+      try {
+        const [estudiantesRes, productosRes] = await Promise.all([
+          api.get('/estudiantes'),
+          api.get('/productos')
+        ]);
 
-    axios.get('http://localhost:3000/productos')
-      .then(res => setProductos(res.data))
-      .catch(err => console.error(err));
+        if (!Array.isArray(estudiantesRes.data) || !Array.isArray(productosRes.data)) {
+          throw new Error('El servidor no devolvió listas válidas de estudiantes y productos.');
+        }
+
+        setEstudiantes(estudiantesRes.data);
+        setProductos(productosRes.data);
+        setError('');
+      } catch (err) {
+        console.error('Error al cargar estudiantes y productos:', err);
+        setError('No se pudieron cargar estudiantes y productos. Verifica la conexión y la variable VITE_API_URL del backend.');
+      }
+    };
+
+    cargarDatos();
   }, []);
 
   const handleChange = (e) => {
@@ -47,12 +46,15 @@ function FormularioVenta() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3000/ventas', formData)
+    api.post('/ventas', formData)
       .then(() => {
         setFormData({ estudiante_id: '', producto_id: '', cantidad: '', fecha: '' });
         window.location.reload();
       })
-      .catch(err => console.error('Error al registrar venta:', err));
+      .catch(err => {
+        console.error('Error al registrar venta:', err);
+        setError('No se pudo registrar la venta. Verifica la conexión con el backend e inténtalo de nuevo.');
+      });
   };
 
   return (
@@ -63,6 +65,8 @@ function FormularioVenta() {
           <span className="cyber-tag">SYSTEM // REGISTRY</span>
           <h2>NUEVA VENTA</h2>
         </div>
+
+        {error && <p role="alert">{error}</p>}
 
         <form onSubmit={handleSubmit} className="form-vertical">
           <div className="input-group">
