@@ -12,6 +12,22 @@ function FormularioVenta() {
   const [estudiantes, setEstudiantes] = useState([]);
   const [productos, setProductos] = useState([]);
 
+
+  useEffect(() => {
+  const cargarDatos = async () => {
+    try {
+      const res = await axios.get(`${API_URL}/productos`);
+      // Asegúrate de guardar solo si viene un arreglo
+      setProductos(Array.isArray(res.data) ? res.data : []);
+    } catch (error) {
+      console.error("Error al cargar productos:", error);
+      setProductos([]); // <--- EVITA QUE SE ROMPA TU APP
+    }
+  };
+
+  cargarDatos();
+}, []);
+
   useEffect(() => {
     axios.get('http://localhost:3000/estudiantes')
       .then(res => setEstudiantes(res.data))
