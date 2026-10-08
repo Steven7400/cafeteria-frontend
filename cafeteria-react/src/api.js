@@ -1,8 +1,7 @@
+
 import axios from 'axios';
 
-const API_URL =
-  import.meta.env.VITE_API_URL ||
-  (import.meta.env.DEV ? 'http://localhost:3000' : '');
+const API_URL = 'https://cafeteria-backend-1-whnd.onrender.com';
 
 export const api = axios.create({
   baseURL: API_URL
