@@ -16,8 +16,8 @@ function EditarVenta({ venta, onUpdate }) {
     const cargarDatos = async () => {
       try {
         const [estudiantesRes, productosRes] = await Promise.all([
-          api.get('/estudiantes'),
-          api.get('/productos')
+          api.get('https://cafeteria-backend-1-whnd.onrender.com/estudiantes'),
+          api.get('https://cafeteria-backend-1-whnd.onrender.com/productos')
         ]);
 
         if (!Array.isArray(estudiantesRes.data) || !Array.isArray(productosRes.data)) {
@@ -44,7 +44,7 @@ function EditarVenta({ venta, onUpdate }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    api.put(`/ventas/${venta.id}`, formData)
+    api.put(`https://cafeteria-backend-1-whnd.onrender.com/ventas/${venta.id}`, formData)
       .then(res => {
         alert(res.data.message);
         onUpdate();

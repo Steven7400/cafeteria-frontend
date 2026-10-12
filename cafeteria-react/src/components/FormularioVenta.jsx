@@ -17,8 +17,8 @@ function FormularioVenta() {
     const cargarDatos = async () => {
       try {
         const [estudiantesRes, productosRes] = await Promise.all([
-          api.get('/estudiantes'),
-          api.get('/productos')
+          api.get('https://cafeteria-backend-1-whnd.onrender.com/estudiantes'),
+          api.get('https://cafeteria-backend-1-whnd.onrender.com/productos')
         ]);
 
         if (!Array.isArray(estudiantesRes.data) || !Array.isArray(productosRes.data)) {

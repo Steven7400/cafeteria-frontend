@@ -8,7 +8,7 @@ function ListaVentas() {
   const [error, setError] = useState('');
 
   const cargarVentas = () => {
-    api.get('/ventas')
+    api.get('https://cafeteria-backend-1-whnd.onrender.com/ventas')
       .then(res => {
         if (!Array.isArray(res.data)) {
           throw new Error('El servidor no devolvió una lista válida de ventas.');
@@ -28,7 +28,7 @@ function ListaVentas() {
 
   const eliminarVenta = (id) => {
     if (window.confirm('¿Seguro que deseas eliminar esta venta?')) {
-      api.delete(`/ventas/${id}`)
+      api.delete(`https://cafeteria-backend-1-whnd.onrender.com/ventas/${id}`)
         .then(res => {
           alert(res.data.message);
           cargarVentas();
